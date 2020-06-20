@@ -1,13 +1,13 @@
 ## Explore Zurich
-Project for the Semantic Technologies and Linked Data course.
+Project for the "Semantic Technologies and Linked Data" course.
 
 ## Project configuration
 ### Requirements
 - Make sure you have the following python libraries installed:
- - csv
- - json
- - shapely
- - geopandas
+   - csv
+   - json
+   - shapely
+   - geopandas
 
 ### 1) Data preparation:
 - Create the folder "data/elaborated/"
