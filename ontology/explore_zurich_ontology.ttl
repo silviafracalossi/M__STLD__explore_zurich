@@ -1,0 +1,116 @@
+
+@prefix : <http://example.org/term/> .                        # for classes/properties
+@prefix i: <http://example.org/inst/> .                       # for instances
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+[ rdf:type owl:Ontology
+ ] .
+
+#################################################################
+#    Annotation properties
+#################################################################
+
+### General Annotation Properties
+:location rdf:type owl:AnnotationProperty .
+:name rdf:type owl:AnnotationProperty .
+:description rdf:type owl:AnnotationProperty .
+:address rdf:type owl:AnnotationProperty .
+
+### POI Subclasses Properties
+:website rdf:type owl:AnnotationProperty .
+:openingHours rdf:type owl:AnnotationProperty .
+:image rdf:type owl:AnnotationProperty .
+
+### Parking Subclasses Properties
+:spacesNo rdf:type owl:AnnotationProperty ;
+          rdfs:domain :Parking .
+
+# BikeParking
+:vehicleType rdf:type owl:AnnotationProperty ;
+             rdfs:domain :BikeParking .
+
+### Region-Type Classes
+# District
+:area rdf:type owl:AnnotationProperty ;
+      rdfs:domain :District .
+
+### Public Transportation Classes
+# BusStop
+:busStopType rdf:type owl:AnnotationProperty ;
+             rdfs:domain :BusStop .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:stopsAt rdf:type owl:ObjectProperty ;
+         rdfs:domain :BusLine ;
+         rdfs:range :BusStop .
+
+:stopsIn rdf:type owl:ObjectProperty ;
+         rdfs:domain :PublicTransportationStop ;
+         rdfs:range :District .
+
+:neighbourhoodIn rdf:type owl:ObjectProperty ;
+                 rdfs:domain :Neighbourhood ;
+                 rdfs:range :District .
+
+:parkingIn rdf:type owl:ObjectProperty ;
+           rdfs:domain :Parking ;
+           rdfs:range :District .
+
+:poiIn rdf:type owl:ObjectProperty ;
+       rdfs:domain :PointOfInterest ;
+       rdfs:range :District .
+
+
+#################################################################
+#    Classes - done
+#################################################################
+
+### Region Classes
+:District rdf:type owl:Class .
+
+:Neighbourhood rdf:type owl:Class .
+
+
+### Public Transportation Classes
+:PublicTransportationStop rdf:type owl:Class .
+
+:BusStop rdf:type owl:Class ;
+         rdfs:subClassOf :PublicTransportationStop .
+
+:BusLine rdf:type owl:Class .
+
+:TrainStation rdf:type owl:Class ;
+              rdfs:subClassOf :PublicTransportationStop .
+
+
+### Parking Classes
+:Parking rdf:type owl:Class .
+
+:CarParking rdf:type owl:Class ;
+            rdfs:subClassOf :Parking .
+
+:BikeParking rdf:type owl:Class ;
+             rdfs:subClassOf :Parking  .
+
+
+### POI Classes
+:PointOfInterest rdf:type owl:Class .
+
+:Restaurant rdf:type owl:Class ;
+            rdfs:subClassOf :PointOfInterest .
+
+:Bar rdf:type owl:Class ;
+     rdfs:subClassOf :PointOfInterest .
+
+:Museum rdf:type owl:Class ;
+        rdfs:subClassOf :PointOfInterest .
+
+:Attraction rdf:type owl:Class ;
+            rdfs:subClassOf :PointOfInterest .
+
+:Shop rdf:type owl:Class ;
+      rdfs:subClassOf :PointOfInterest .
