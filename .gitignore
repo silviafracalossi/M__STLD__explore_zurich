@@ -1,6 +1,5 @@
 
-data/elaborated/*
-resources/data/*
+resources/data/elaborated/*
 python_elaboration/__pycache__
 
 # Intellij gitignored files
