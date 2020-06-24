@@ -8,23 +8,42 @@ def load_districts():
     print("[INFO] Loading districts from file...")
 
     # Defining the district list
+    header = ""
+    new_file_lines = []
     districts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     # Reading the district csv
-    with open('../data/original/01 - district.csv') as csv_file:
+    with open('../resources/data/original/01 - district.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
-        is_header = True
 
         # Iterating the csv
         for row in csv_reader:
 
             # Header
-            if is_header:
-                is_header = False
+            if header == "":
+                row.pop()
+                header = row
 
             # Rows
             else:
                 districts[int(row[1])] = string_to_polygon(row[3])
+
+                # Removing old geometry values and adding converted ones
+                row.pop()
+                row.append(districts[int(row[1])])
+                new_file_lines.append([row])
+
+    # Writing into the destination file
+    with open('../resources/data/elaborated/01_elaborated_district.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+
+        # Inserting header
+        header.append("fixed_geometry")
+        spamwriter.writerow(header)
+
+        # Inserting rows
+        for line in new_file_lines:
+            spamwriter.writerow(line[0])
 
     # Returning list of district id and polygon
     return districts

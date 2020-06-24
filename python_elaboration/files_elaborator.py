@@ -4,7 +4,7 @@ import shapely
 import geopandas as gpd
 
 from shapely.geometry import Point, Polygon
-from shape_creator import string_to_point
+from shape_creator import string_to_point, convert_point
 
 # Elaborates csv and stores elaboration with district id
 def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_field=0):
@@ -12,7 +12,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
     new_file_lines = []
 
     # Reading the district csv
-    with open('../data/original/'+original_file) as csv_file:
+    with open('../resources/data/original/'+original_file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         header = ""
 
@@ -23,6 +23,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
             if header == "":
                 header = row
                 header[0] = header[0].replace("\"","")
+                header.append("fixed_geometry")
 
             # Rows
             else:
@@ -32,7 +33,8 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
                 if id_secondary_point_field == 0:
                     location_point = string_to_point(row[id_point_field])
                 else:
-                    location_point = Point(float(row[id_point_field]), float(row[id_secondary_point_field]))
+                    location_point = convert_point(Point(float(row[id_point_field]), float(row[id_secondary_point_field])))
+
 
                 # Iterate through districts to find the correct match
                 district_id = 0
@@ -43,6 +45,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
 
                 # Insert district id inside the row
                 if district_id != 0:
+                    row.append(location_point)
                     row.append(district_id)
                     new_file_lines.append([row])
 
@@ -51,7 +54,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
     destination_file = destination_file.replace(" ", "_")
 
     # Writing into the destination file
-    with open('../data/elaborated/'+destination_file, 'w', newline='') as csvfile:
+    with open('../resources/data/elaborated/'+destination_file, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         # Inserting header
@@ -67,7 +70,7 @@ def elaborate_json(districts, original_file):
     print("[INFO] Processing json file "+original_file)
     new_file_lines = []
 
-    with open('../data/original/'+original_file) as json_file:
+    with open('../resources/data/original/'+original_file) as json_file:
         data = json.load(json_file)
 
         # Iterating through dataset
@@ -77,17 +80,7 @@ def elaborate_json(districts, original_file):
             if "geo" in row:
 
                 # Creating the point
-                latitude = float(row['geo']['latitude'])
-                longitude = float(row['geo']['longitude'])
-
-                # Converting the point in the used format
-                geo_df = gpd.GeoDataFrame([],
-                    geometry=gpd.GeoSeries(Point(longitude, latitude)))
-                geo_df.crs = 'epsg:4326'
-                geo_df = geo_df.to_crs('epsg:2056')
-
-                # Extracting the location point
-                location_point = geo_df['geometry'].iloc[0]
+                location_point = Point(float(row['geo']['latitude']), float(row['geo']['longitude']))
 
                 # Iterate through districts to find the correct match
                 district_id = 0
@@ -107,7 +100,7 @@ def elaborate_json(districts, original_file):
     destination_file = destination_file.replace(" ", "_")
 
     # Writing rows in new file
-    with open('../data/elaborated/'+destination_file, 'w') as json_dest_file:
+    with open('../resources/data/elaborated/'+destination_file, 'w') as json_dest_file:
         for row in new_file_lines:
             json.dump(row, json_dest_file)
 
@@ -117,7 +110,7 @@ def elaborate_train_station_json(districts):
     print("[INFO] Processing json file "+original_file)
     new_file_lines = []
 
-    with open('../data/original/'+original_file) as json_file:
+    with open('../resources/data/original/'+original_file) as json_file:
         data = json.load(json_file)
 
         # Iterating through dataset
@@ -127,17 +120,7 @@ def elaborate_train_station_json(districts):
             if "coordinate" in row:
 
                 # Creating the point
-                latitude = float(row['coordinate']['x'])
-                longitude = float(row['coordinate']['y'])
-
-                # Converting the point in the used format
-                geo_df = gpd.GeoDataFrame([],
-                    geometry=gpd.GeoSeries(Point(longitude, latitude)))
-                geo_df.crs = 'epsg:4326'
-                geo_df = geo_df.to_crs('epsg:2056')
-
-                # Extracting the location point
-                location_point = geo_df['geometry'].iloc[0]
+                location_point = Point(float(row['coordinate']['x']), float(row['coordinate']['y']))
 
                 # Iterate through districts to find the correct match
                 district_id = 0
@@ -157,6 +140,28 @@ def elaborate_train_station_json(districts):
     destination_file = destination_file.replace(" ", "_")
 
     # Writing rows in new file
-    with open('../data/elaborated/'+destination_file, 'w') as json_dest_file:
+    with open('../resources/data/elaborated/'+destination_file, 'w') as json_dest_file:
         for row in new_file_lines:
             json.dump(row, json_dest_file)
+
+
+
+def copy_neighbourhoods():
+    print("[INFO] Copying neighbourhoods file")
+    file = []
+
+    # Reading the neighbourhoods file
+    with open('../resources/data/original/02 - neighbourhood.csv') as csv_file:
+        data = csv.reader(csv_file, delimiter=';')
+
+        # Iterating through dataset
+        for row in data:
+            file.append(row)
+
+    # Writing into the destination file
+    with open('../resources/data/elaborated/02_elaborated_neighbourhood.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
+
+        # Inserting rows
+        for line in file:
+            spamwriter.writerow(line)
