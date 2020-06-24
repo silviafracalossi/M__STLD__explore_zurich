@@ -6,7 +6,7 @@ python_elaboration/__pycache__
 #=== Intellij gitignored files
 .idea/*
 target/*
-# *.iml
+stld_explore_zurich_old.iml
 
 #=== Example files (to be removed at the end)
 resources/mapping/altro/*
