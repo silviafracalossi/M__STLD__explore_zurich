@@ -33,8 +33,8 @@ public class EnrichedPoints extends Application {
         Scene scene = new Scene(stackPane);
 
         stage.setTitle("DevLabs");
-        stage.setWidth(600);
-        stage.setHeight(350);
+        stage.setWidth(1000);
+        stage.setHeight(600);
         stage.setScene(scene);
         stage.show();
 
