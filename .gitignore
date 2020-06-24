@@ -1,7 +1,15 @@
 
+#=== Result files
 resources/data/elaborated/*
 python_elaboration/__pycache__
 
-# Intellij gitignored files
+#=== Intellij gitignored files
 .idea/*
 target/*
+
+#=== Example files (to be removed at the end)
+resources/mapping/altro/*
+resources/mapping/log/*
+src/main/java/Carml/*
+src/main/java/Labs/*
+src/main/java/PDI/*
