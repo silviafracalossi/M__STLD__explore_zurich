@@ -75,3 +75,59 @@
           rr:termType rr:IRI
       ]
   ] .
+
+
+<#BusStopMapping>
+  a rr:TriplesMap ;
+
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT * FROM "bus";
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "busstop/{NHSTID}" ;
+      rr:class :BusStop ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :name;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "CHSTNAME" ;
+          rr:termType rr:Literal
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :busStopType;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "VTYP" ;
+          rr:termType rr:Literal
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :location;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "fixed_geometry" ;
+          rr:termType rr:Literal
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :stopsIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{district_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
