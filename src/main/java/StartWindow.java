@@ -6,13 +6,13 @@ import java.awt.event.ActionListener;
 public class StartWindow {
     private JFrame frame;
     private JTextField txtSomething;
-    // private Session db_session;
+    private DataLoader dl;
 
     /**
      * Create the application.
      */
-    public StartWindow(/*Session db_session*/) {
-        //this.db_session = db_session;
+    public StartWindow(DataLoader dl) {
+        this.dl = dl;
         initialize();
     }
 

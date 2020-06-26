@@ -3,14 +3,16 @@ import java.awt.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println("why");
+    public static void main(String[] args) throws Exception {
 
-        // Initialize the interface
+        // DATA LOADER
+        final DataLoader dl = new DataLoader();
+
+        // INTERFACE
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    StartWindow window = new StartWindow(/*db_session*/);
+                     StartWindow window = new StartWindow(dl);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
