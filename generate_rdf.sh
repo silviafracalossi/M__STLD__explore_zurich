@@ -1,0 +1,1 @@
+/mnt/d/Programmi/ontop-cli-4.0.0-beta-1-regular/ontop materialize --ontology=resources/ontology/ontology.ttl --mapping=resources/mapping/mapping.ttl --properties=resources/database/db_connection.properties -o resources/data/04_RDF/data.rdf
