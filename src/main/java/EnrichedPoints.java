@@ -69,9 +69,9 @@ public class EnrichedPoints extends Application {
     private void setupMap() {
         if (mapView != null) {
             Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
-            double latitude = 47.411526;
-            double longitude = 8.54414;
-            int levelOfDetail = 11;
+            double latitude = 47.3769;
+            double longitude = 8.5417;
+            int levelOfDetail = 12;
             ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
             mapView.setMap(map);
         }
@@ -155,7 +155,6 @@ public class EnrichedPoints extends Application {
                     new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f));
                 Graphic polygonGraphic = new Graphic(polygon, polygonSymbol);
                 graphicsOverlay.getGraphics().add(polygonGraphic);
-
             }
 
 

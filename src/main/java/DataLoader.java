@@ -29,6 +29,7 @@ public class DataLoader {
         data_file = new File("D:/Uni/repositories/stld_explore_zurich/resources/data/04_RDF/data.rdf");
     }
 
+
     // Retrieving all the district areas
     public List<BindingSet> getDistrictAreas() throws Exception {
 
@@ -41,11 +42,44 @@ public class DataLoader {
 
             // Formulating SPARQL Query
             String sparqlQuery = "\n" +
-                    "PREFIX i: <http://example.org/inst/>\n" +
                     "PREFIX : <http://example.org/term/>\n\n" +
                     "SELECT ?d ?d_area \n" +
                     "WHERE {\n" +
                     "   ?d :area ?d_area .\n" +
+                    "   ?d rdf:type :District .\n" +
+                    "}" +
+                    "\n";
+
+            // Evaluating the query and retrieving the results
+            try (TupleQueryResult query_result = connection.prepareTupleQuery(sparqlQuery).evaluate()) {
+                result_list = QueryResults.asList(query_result);
+            }
+
+            return result_list;
+        }
+    }
+
+
+    // Retrieving all the neighbourhoods along with the name of their districts
+    public List<BindingSet> getNeighbourhoodsAndDistrictNames() throws Exception {
+
+        // Creating result list variable
+        List<BindingSet> result_list;
+
+        // Making sure the connection is working
+        try (RepositoryConnection connection = repo.getConnection()) {
+            connection.add(data_file, "http://example.org/inst/", RDFFormat.RDFXML);
+
+            // Formulating SPARQL Query
+            String sparqlQuery = "\n" +
+                    "PREFIX : <http://example.org/term/>\n\n" +
+                    "SELECT ?n_name ?d_name \n" +
+                    "WHERE {\n" +
+                    "   ?n :neighbourhoodIn ?d .\n" +
+                    "   ?n rdf:type :Neighbourhood .\n" +
+                    "   ?d rdf:type :District .\n" +
+                    "   ?n :name ?n_name .\n" +
+                    "   ?d :name ?d_name .\n" +
                     "}" +
                     "\n";
 

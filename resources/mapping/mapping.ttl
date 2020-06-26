@@ -15,7 +15,7 @@
 
   rr:subjectMap [
       a rr:SubjectMap, rr:TermMap;
-      rr:template "district/{objid}" ;
+      rr:template "district/{knr}" ;
       rr:class :District ;
       rr:termType rr:IRI
   ] ;
@@ -37,5 +37,41 @@
           a rr:ObjectMap, rr:TermMap ;
           rr:column "fixed_geometry" ;
           rr:termType rr:Literal
+      ]
+  ] .
+
+
+<#NeighbourhoodMapping>
+  a rr:TriplesMap ;
+
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT * FROM "neighbourhood";
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "neighbourhood/{neighbourhoods}" ;
+      rr:class :Neighbourhood ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :name;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "neighbourhoods" ;
+          rr:termType rr:Literal
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :neighbourhoodIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{district}" ;
+          rr:termType rr:IRI
       ]
   ] .
