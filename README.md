@@ -16,7 +16,7 @@ Project for the "Semantic Technologies and Linked Data" course.
 - Execute the command _python python_elaboration\main.py_ from the main directory. The operation takes roughly 5 minutes. (see result in: resources/data/02_python_elaborated)
 - Transform the generated CSV files into SQL (tool: https://sqlizer.io/?utm_source=csv2sql_blog#/)
 - Transform the generated JSON files into SQL (tool: https://sqlizer.io/json-to-mysql/?utm_source=json2sql_blog#/)
-- Execute the SQL commands into an H2 database
+- Execute the SQL commands into an H2 database (see resources/database/h2_database.\*.db)
 - Create the ontology (see resources/ontology/ontology.ttl)
 - Create the mapping (see resources/mapping/mapping.ttl)
 - Configurate the .properties file so that Ontop can connect to the H2 Database (see resources/database/db_connection.properties)
