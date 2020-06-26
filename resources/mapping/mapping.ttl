@@ -1,23 +1,24 @@
-@prefix : <http://example.org/term/> .                        # for classes/properties
-@prefix i: <http://example.org/inst/> .                       # for instances
+@prefix : <http://example.org/term/> .
+@prefix i: <http://example.org/inst/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rr:    <http://www.w3.org/ns/r2rml#> .
 
-<#DistrictMap>
+
+<#DistrictMapping>
   a rr:TriplesMap ;
 
   rr:logicalTable [
-      a rr:R2RMLView ;
-      rr:logicalTable <#DistrictTable>
-  ];
+    rr:sqlQuery """
+      SELECT * FROM "district";
+  """] ;
 
   rr:subjectMap [
       a rr:SubjectMap, rr:TermMap;
-      rr:template "i:/district/{DISTRICT_ID}" ;
+      rr:template "district/{objid}" ;
       rr:class :District ;
       rr:termType rr:IRI
-  ];
+  ] ;
 
   rr:predicateObjectMap [
       a rr:PredicateObjectMap ;
@@ -25,6 +26,16 @@
       rr:objectMap [
           a rr:ObjectMap, rr:TermMap ;
           rr:column "kname" ;
+          rr:termType rr:Literal
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :area;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "fixed_geometry" ;
           rr:termType rr:Literal
       ]
   ] .
