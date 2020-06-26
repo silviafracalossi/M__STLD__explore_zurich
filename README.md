@@ -17,7 +17,6 @@ Project for the "Semantic Technologies and Linked Data" course.
 - Transform the generated CSV files into SQL (tool: https://sqlizer.io/?utm_source=csv2sql_blog#/)
 - Transform the generated JSON files into SQL (tool: https://sqlizer.io/json-to-mysql/?utm_source=json2sql_blog#/)
 - Execute the SQL commands into an H2 database
-- Define the Primary Key of the table and set it as "Not Nullable" (see resources/data/03_sql/SQL_primary_key_definition.sql)
 - Create the ontology (see resources/ontology/ontology.ttl)
 - Create the mapping (see resources/mapping/mapping.ttl)
 - Configurate the .properties file so that Ontop can connect to the H2 Database (see resources/database/db_connection.properties)
