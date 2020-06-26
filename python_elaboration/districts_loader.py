@@ -13,7 +13,7 @@ def load_districts():
     districts = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     # Reading the district csv
-    with open('../resources/data/original/01 - district.csv') as csv_file:
+    with open('resources/data/01_original/01 - district.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
         # Iterating the csv
@@ -34,7 +34,7 @@ def load_districts():
                 new_file_lines.append([row])
 
     # Writing into the destination file
-    with open('../resources/data/elaborated/01_elaborated_district.csv', 'w', newline='') as csvfile:
+    with open('resources/data/02_python_elaborated/01_elaborated_district.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         # Inserting header

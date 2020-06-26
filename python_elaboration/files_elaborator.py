@@ -12,7 +12,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
     new_file_lines = []
 
     # Reading the district csv
-    with open('../resources/data/original/'+original_file) as csv_file:
+    with open('resources/data/01_original/'+original_file) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         header = ""
 
@@ -54,7 +54,7 @@ def elaborate_csv(districts, original_file, id_point_field, id_secondary_point_f
     destination_file = destination_file.replace(" ", "_")
 
     # Writing into the destination file
-    with open('../resources/data/elaborated/'+destination_file, 'w', newline='') as csvfile:
+    with open('resources/data/02_python_elaborated/'+destination_file, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         # Inserting header
@@ -70,7 +70,7 @@ def elaborate_json(districts, original_file):
     print("[INFO] Processing json file "+original_file)
     new_file_lines = []
 
-    with open('../resources/data/original/'+original_file) as json_file:
+    with open('resources/data/01_original/'+original_file) as json_file:
         data = json.load(json_file)
 
         # Iterating through dataset
@@ -100,7 +100,7 @@ def elaborate_json(districts, original_file):
     destination_file = destination_file.replace(" ", "_")
 
     # Writing rows in new file
-    with open('../resources/data/elaborated/'+destination_file, 'w') as json_dest_file:
+    with open('resources/data/02_python_elaborated/'+destination_file, 'w') as json_dest_file:
         for row in new_file_lines:
             json.dump(row, json_dest_file)
 
@@ -110,7 +110,7 @@ def elaborate_train_station_json(districts):
     print("[INFO] Processing json file "+original_file)
     new_file_lines = []
 
-    with open('../resources/data/original/'+original_file) as json_file:
+    with open('resources/data/01_original/'+original_file) as json_file:
         data = json.load(json_file)
 
         # Iterating through dataset
@@ -140,7 +140,7 @@ def elaborate_train_station_json(districts):
     destination_file = destination_file.replace(" ", "_")
 
     # Writing rows in new file
-    with open('../resources/data/elaborated/'+destination_file, 'w') as json_dest_file:
+    with open('resources/data/02_python_elaborated/'+destination_file, 'w') as json_dest_file:
         for row in new_file_lines:
             json.dump(row, json_dest_file)
 
@@ -151,7 +151,7 @@ def copy_neighbourhoods():
     file = []
 
     # Reading the neighbourhoods file
-    with open('../resources/data/original/02 - neighbourhood.csv') as csv_file:
+    with open('resources/data/01_original/02 - neighbourhood.csv') as csv_file:
         data = csv.reader(csv_file, delimiter=';')
 
         # Iterating through dataset
@@ -159,7 +159,7 @@ def copy_neighbourhoods():
             file.append(row)
 
     # Writing into the destination file
-    with open('../resources/data/elaborated/02_elaborated_neighbourhood.csv', 'w', newline='') as csvfile:
+    with open('resources/data/02_python_elaborated/02_elaborated_neighbourhood.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         # Inserting rows
