@@ -22,7 +22,7 @@ import org.eclipse.rdf4j.model.util.Literals;
 import org.eclipse.rdf4j.query.BindingSet;
 import java.util.List;
 
-public class EnrichedPoints extends Application {
+public class MainWindow extends Application {
 
     private int hexRed = 0xFFFF0000;
     private int hexBlue = 0xFF00FF00;
@@ -32,15 +32,6 @@ public class EnrichedPoints extends Application {
     private MapView mapView;
 
     private DataLoader dl;
-
-    /**
-     * Create the application.
-     */
-//    public EnrichedPoints(DataLoader dl) {
-//        this.dl = dl;
-//        //Application.launch();
-//
-//    }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -65,6 +56,7 @@ public class EnrichedPoints extends Application {
 
         stackPane.getChildren().addAll(mapView);
     }
+
 
     private void setupMap() {
         if (mapView != null) {
