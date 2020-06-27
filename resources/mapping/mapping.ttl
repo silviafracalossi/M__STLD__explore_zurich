@@ -138,7 +138,56 @@
 
 
 # ==================== 4. BusLine - missing
-# ==================== 5. TrainStation - missing
+
+# ==================== 5. TrainStation
+<#TrainStationMapping>
+  a rr:TriplesMap ;
+
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT * FROM "train_station"
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "trainstation/{stations_id}" ;
+      rr:class :TrainStation ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :name;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "stations_name" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :location;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "stations_geometry" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :stopsIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{stations_district_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
+
+
 # ==================== 6. CarParking - missing
 
 

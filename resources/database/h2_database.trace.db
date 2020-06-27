@@ -1793,3 +1793,275 @@ Caused by: java.io.IOException: Invalid argument
 	at org.h2.store.fs.FileNio.read(FilePathNio.java:74)
 	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:421)
 	... 39 more
+2020-06-27 12:33:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DECLARE @[*]JSON NVARCHAR(MAX) "; expected "OR, FORCE, VIEW, ALIAS, SEQUENCE, USER, TRIGGER, ROLE, SCHEMA, CONSTANT, DOMAIN, TYPE, DATATYPE, AGGREGATE, LINKED, MEMORY, CACHED, LOCAL, GLOBAL, TEMP, TEMPORARY, TABLE, SYNONYM, PRIMARY, UNIQUE, HASH, SPATIAL, INDEX"; SQL statement:
+DECLARE @json NVARCHAR(MAX) [42001-199]
+2020-06-27 12:33:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DECLARE @[*]JSON NVARCHAR(MAX)
+SET @JSON =   
+  N'[  
+       {  
+         ""Order"": {  
+           ""Number"":""SO43659"",  
+           ""Date"":""2011-05-31T00:00:00""  
+         },  
+         ""AccountNumber"":""AW29825"",  
+         ""Item"": {  
+           ""Price"":2024.9940,  
+           ""Quantity"":1  
+         }  
+       },  
+       {  
+         ""Order"": {  
+           ""Number"":""SO43661"",  
+           ""Date"":""2011-06-01T00:00:00""  
+         },  
+         ""AccountNumber"":""AW73565"",  
+         ""Item"": {  
+           ""Price"":2024.9940,  
+           ""Quantity"":3  
+         }  
+      }  
+ ]'  
+   
+SELECT * FROM  
+ OPENJSON ( @JSON )  
+WITH (   
+              NUMBER   VARCHAR(200) '$.Order.Number' ,  
+              DATE     DATETIME     '$.Order.Date',  
+              CUSTOMER VARCHAR(200) '$.AccountNumber',  
+              QUANTITY INT          '$.Item.Quantity'  
+ ) "; expected "OR, FORCE, VIEW, ALIAS, SEQUENCE, USER, TRIGGER, ROLE, SCHEMA, CONSTANT, DOMAIN, TYPE, DATATYPE, AGGREGATE, LINKED, MEMORY, CACHED, LOCAL, GLOBAL, TEMP, TEMPORARY, TABLE, SYNONYM, PRIMARY, UNIQUE, HASH, SPATIAL, INDEX"; SQL statement:
+DECLARE @json NVARCHAR(MAX)
+SET @json =   
+  N'[  
+       {  
+         "Order": {  
+           "Number":"SO43659",  
+           "Date":"2011-05-31T00:00:00"  
+         },  
+         "AccountNumber":"AW29825",  
+         "Item": {  
+           "Price":2024.9940,  
+           "Quantity":1  
+         }  
+       },  
+       {  
+         "Order": {  
+           "Number":"SO43661",  
+           "Date":"2011-06-01T00:00:00"  
+         },  
+         "AccountNumber":"AW73565",  
+         "Item": {  
+           "Price":2024.9940,  
+           "Quantity":3  
+         }  
+      }  
+ ]'  
+   
+SELECT * FROM  
+ OPENJSON ( @json )  
+WITH (   
+              Number   varchar(200) '$.Order.Number' ,  
+              Date     datetime     '$.Order.Date',  
+              Customer varchar(200) '$.AccountNumber',  
+              Quantity int          '$.Item.Quantity'  
+ ) [42001-199]
+2020-06-27 12:34:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DECLARE @[*]JSON NVARCHAR(MAX) "; expected "OR, FORCE, VIEW, ALIAS, SEQUENCE, USER, TRIGGER, ROLE, SCHEMA, CONSTANT, DOMAIN, TYPE, DATATYPE, AGGREGATE, LINKED, MEMORY, CACHED, LOCAL, GLOBAL, TEMP, TEMPORARY, TABLE, SYNONYM, PRIMARY, UNIQUE, HASH, SPATIAL, INDEX"; SQL statement:
+DECLARE @json NVARCHAR(MAX) [42001-199]
+2020-06-27 12:34:03 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SET @JSON =   
+  N'[  
+       {  
+         ""Order"": {  
+           ""Number"":""SO43659"",  
+           ""Date"":""2011-05-31T00:00:00""  
+         },  
+         ""AccountNumber"":""AW29825"",  
+         ""Item"": {  
+           ""Price"":2024.9940,  
+           ""Quantity"":1  
+         }  
+       },  
+       {  
+         ""Order"": {  
+           ""Number"":""SO43661"",  
+           ""Date"":""2011-06-01T00:00:00""  
+         },  
+         ""AccountNumber"":""AW73565"",  
+         ""Item"": {  
+           ""Price"":2024.9940,  
+           ""Quantity"":3  
+         }  
+      }  
+ ]'  
+   
+SELECT[*] * FROM  
+ OPENJSON ( @JSON )  
+WITH (   
+              NUMBER   VARCHAR(200) '$.Order.Number' ,  
+              DATE     DATETIME     '$.Order.Date',  
+              CUSTOMER VARCHAR(200) '$.AccountNumber',  
+              QUANTITY INT          '$.Item.Quantity'  
+ ) "; SQL statement:
+SET @json =   
+  N'[  
+       {  
+         "Order": {  
+           "Number":"SO43659",  
+           "Date":"2011-05-31T00:00:00"  
+         },  
+         "AccountNumber":"AW29825",  
+         "Item": {  
+           "Price":2024.9940,  
+           "Quantity":1  
+         }  
+       },  
+       {  
+         "Order": {  
+           "Number":"SO43661",  
+           "Date":"2011-06-01T00:00:00"  
+         },  
+         "AccountNumber":"AW73565",  
+         "Item": {  
+           "Price":2024.9940,  
+           "Quantity":3  
+         }  
+      }  
+ ]'  
+   
+SELECT * FROM  
+ OPENJSON ( @json )  
+WITH (   
+              Number   varchar(200) '$.Order.Number' ,  
+              Date     datetime     '$.Order.Date',  
+              Customer varchar(200) '$.AccountNumber',  
+              Quantity int          '$.Item.Quantity'  
+ ) [42000-199]
+2020-06-27 13:05:13 database: flush
+org.h2.message.DbException: General error: "java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]" [50000-196]
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convert(DbException.java:295)
+	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:95)
+	at org.h2.mvstore.MVStore.panic(MVStore.java:378)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:361)
+	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2930)
+	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:155)
+	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:100)
+	at org.h2.engine.Database.getPageStore(Database.java:2476)
+	at org.h2.engine.Database.open(Database.java:697)
+	at org.h2.engine.Database.openDatabase(Database.java:276)
+	at org.h2.engine.Database.<init>(Database.java:270)
+	at org.h2.engine.Engine.openSession(Engine.java:64)
+	at org.h2.engine.Engine.openSession(Engine.java:176)
+	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:154)
+	at org.h2.engine.Engine.createSession(Engine.java:137)
+	at org.h2.engine.Engine.createSession(Engine.java:27)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:354)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:116)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
+	at org.h2.Driver.connect(Driver.java:69)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:247)
+	at it.unibz.inf.ontop.utils.LocalJDBCConnectionUtils.createConnection(LocalJDBCConnectionUtils.java:18)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.extractDBMetadata(SQLMappingExtractor.java:157)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.convertPPMapping(SQLMappingExtractor.java:93)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.convertPPMapping(SQLMappingExtractor.java:41)
+	at it.unibz.inf.ontop.spec.mapping.impl.AbstractMappingExtractor.extract(AbstractMappingExtractor.java:72)
+	at it.unibz.inf.ontop.spec.mapping.impl.AbstractMappingExtractor.extract(AbstractMappingExtractor.java:43)
+	at it.unibz.inf.ontop.spec.impl.DefaultOBDASpecificationExtractor.extract(DefaultOBDASpecificationExtractor.java:38)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingConfigurationImpl.loadSpecification(OntopMappingConfigurationImpl.java:129)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingSQLConfigurationImpl.loadSpecification(OntopMappingSQLConfigurationImpl.java:85)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingSQLAllConfigurationImpl.loadSpecification(OntopMappingSQLAllConfigurationImpl.java:48)
+	at it.unibz.inf.ontop.injection.impl.OntopSQLOWLAPIConfigurationImpl.loadOBDASpecification(OntopSQLOWLAPIConfigurationImpl.java:34)
+	at it.unibz.inf.ontop.injection.impl.OntopOBDAConfigurationImpl.loadSpecification(OntopOBDAConfigurationImpl.java:44)
+	at it.unibz.inf.ontop.materialization.impl.DefaultOntopRDFMaterializer.<init>(DefaultOntopRDFMaterializer.java:94)
+	at it.unibz.inf.ontop.rdf4j.materialization.impl.DefaultRDF4JMaterializer.<init>(DefaultRDF4JMaterializer.java:58)
+	at it.unibz.inf.ontop.rdf4j.materialization.RDF4JMaterializer.defaultMaterializer(RDF4JMaterializer.java:34)
+	at it.unibz.inf.ontop.cli.OntopMaterialize.createMaterializer(OntopMaterialize.java:136)
+	at it.unibz.inf.ontop.cli.OntopMaterialize.run(OntopMaterialize.java:117)
+	at it.unibz.inf.ontop.cli.Ontop.main(Ontop.java:18)
+Caused by: org.h2.jdbc.JdbcSQLException: General error: "java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]" [50000-196]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	... 41 more
+Caused by: java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]
+	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:765)
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:435)
+	at org.h2.mvstore.FileStore.readFully(FileStore.java:98)
+	at org.h2.mvstore.MVStore.readStoreHeader(MVStore.java:565)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:358)
+	... 36 more
+Caused by: java.io.IOException: Invalid argument
+	at sun.nio.ch.FileDispatcherImpl.pread0(Native Method)
+	at sun.nio.ch.FileDispatcherImpl.pread(FileDispatcherImpl.java:52)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:220)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:197)
+	at sun.nio.ch.FileChannelImpl.readInternal(FileChannelImpl.java:735)
+	at sun.nio.ch.FileChannelImpl.read(FileChannelImpl.java:721)
+	at org.h2.store.fs.FileNio.read(FilePathNio.java:74)
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:421)
+	... 39 more
+2020-06-27 13:05:13 database: flush
+org.h2.message.DbException: General error: "java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]" [50000-196]
+	at org.h2.message.DbException.get(DbException.java:168)
+	at org.h2.message.DbException.convert(DbException.java:295)
+	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:95)
+	at org.h2.mvstore.MVStore.panic(MVStore.java:378)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:361)
+	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:2930)
+	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:155)
+	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:100)
+	at org.h2.engine.Database.getPageStore(Database.java:2476)
+	at org.h2.engine.Database.open(Database.java:697)
+	at org.h2.engine.Database.openDatabase(Database.java:276)
+	at org.h2.engine.Database.<init>(Database.java:270)
+	at org.h2.engine.Engine.openSession(Engine.java:64)
+	at org.h2.engine.Engine.openSession(Engine.java:176)
+	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:154)
+	at org.h2.engine.Engine.createSession(Engine.java:137)
+	at org.h2.engine.Engine.createSession(Engine.java:27)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:354)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:116)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:100)
+	at org.h2.Driver.connect(Driver.java:69)
+	at java.sql.DriverManager.getConnection(DriverManager.java:664)
+	at java.sql.DriverManager.getConnection(DriverManager.java:247)
+	at it.unibz.inf.ontop.utils.LocalJDBCConnectionUtils.createConnection(LocalJDBCConnectionUtils.java:28)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.extractDBMetadata(SQLMappingExtractor.java:157)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.convertPPMapping(SQLMappingExtractor.java:93)
+	at it.unibz.inf.ontop.spec.mapping.impl.SQLMappingExtractor.convertPPMapping(SQLMappingExtractor.java:41)
+	at it.unibz.inf.ontop.spec.mapping.impl.AbstractMappingExtractor.extract(AbstractMappingExtractor.java:72)
+	at it.unibz.inf.ontop.spec.mapping.impl.AbstractMappingExtractor.extract(AbstractMappingExtractor.java:43)
+	at it.unibz.inf.ontop.spec.impl.DefaultOBDASpecificationExtractor.extract(DefaultOBDASpecificationExtractor.java:38)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingConfigurationImpl.loadSpecification(OntopMappingConfigurationImpl.java:129)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingSQLConfigurationImpl.loadSpecification(OntopMappingSQLConfigurationImpl.java:85)
+	at it.unibz.inf.ontop.injection.impl.OntopMappingSQLAllConfigurationImpl.loadSpecification(OntopMappingSQLAllConfigurationImpl.java:48)
+	at it.unibz.inf.ontop.injection.impl.OntopSQLOWLAPIConfigurationImpl.loadOBDASpecification(OntopSQLOWLAPIConfigurationImpl.java:34)
+	at it.unibz.inf.ontop.injection.impl.OntopOBDAConfigurationImpl.loadSpecification(OntopOBDAConfigurationImpl.java:44)
+	at it.unibz.inf.ontop.materialization.impl.DefaultOntopRDFMaterializer.<init>(DefaultOntopRDFMaterializer.java:94)
+	at it.unibz.inf.ontop.rdf4j.materialization.impl.DefaultRDF4JMaterializer.<init>(DefaultRDF4JMaterializer.java:58)
+	at it.unibz.inf.ontop.rdf4j.materialization.RDF4JMaterializer.defaultMaterializer(RDF4JMaterializer.java:34)
+	at it.unibz.inf.ontop.cli.OntopMaterialize.createMaterializer(OntopMaterialize.java:136)
+	at it.unibz.inf.ontop.cli.OntopMaterialize.run(OntopMaterialize.java:117)
+	at it.unibz.inf.ontop.cli.Ontop.main(Ontop.java:18)
+Caused by: org.h2.jdbc.JdbcSQLException: General error: "java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]" [50000-196]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)
+	... 41 more
+Caused by: java.lang.IllegalStateException: Reading from nio:/mnt/d/Uni/repositories/stld_explore_zurich/resources/database/h2_database.mv.db failed; file length 954368 read length 8192 at 0 [1.4.196/1]
+	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:765)
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:435)
+	at org.h2.mvstore.FileStore.readFully(FileStore.java:98)
+	at org.h2.mvstore.MVStore.readStoreHeader(MVStore.java:565)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:358)
+	... 36 more
+Caused by: java.io.IOException: Invalid argument
+	at sun.nio.ch.FileDispatcherImpl.pread0(Native Method)
+	at sun.nio.ch.FileDispatcherImpl.pread(FileDispatcherImpl.java:52)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:220)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:197)
+	at sun.nio.ch.FileChannelImpl.readInternal(FileChannelImpl.java:735)
+	at sun.nio.ch.FileChannelImpl.read(FileChannelImpl.java:721)
+	at org.h2.store.fs.FileNio.read(FilePathNio.java:74)
+	at org.h2.mvstore.DataUtils.readFully(DataUtils.java:421)
+	... 39 more
