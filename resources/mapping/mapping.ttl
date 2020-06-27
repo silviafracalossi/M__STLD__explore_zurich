@@ -188,8 +188,75 @@
   ] .
 
 
-# ==================== 6. CarParking - missing
+# ==================== 6. CarParking ====================
+<#CarParkingMapping>
+  a rr:TriplesMap ;
 
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT * FROM "car_parking"
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "carparking/{objectid}" ;
+      rr:class :CarParking ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :name;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "name" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :address;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "adresse" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :spacesNo;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "anzahl_oeffentliche_pp" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:positiveInteger
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :location;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "fixed_geometry" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :parkingIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{district_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
 
 # ==================== 7. BikeParking ====================
 <#BikeParkingMapping>
