@@ -1,10 +1,12 @@
-@prefix : <http://example.org/term/> .
-@prefix i: <http://example.org/inst/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rr:    <http://www.w3.org/ns/r2rml#> .
+@prefix :       <http://example.org/term/> .
+@prefix i:      <http://example.org/inst/> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rr:     <http://www.w3.org/ns/r2rml#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
 
 
+# ==================== 1. District ====================
 <#DistrictMapping>
   a rr:TriplesMap ;
 
@@ -41,6 +43,7 @@
   ] .
 
 
+# ==================== 2. Neighbourhood ====================
 <#NeighbourhoodMapping>
   a rr:TriplesMap ;
 
@@ -77,12 +80,13 @@
   ] .
 
 
+# ==================== 3. BusStop ====================
 <#BusStopMapping>
   a rr:TriplesMap ;
 
   rr:logicalTable [
     rr:sqlQuery """
-      SELECT * FROM "bus";
+      SELECT * FROM "bus" WHERE linien IS NOT NULL;
   """] ;
 
   rr:subjectMap [
@@ -125,6 +129,77 @@
   rr:predicateObjectMap [
       a rr:PredicateObjectMap ;
       rr:predicate :stopsIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{district_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
+
+
+# ==================== 4. BusLine - missing
+# ==================== 5. TrainStation - missing
+# ==================== 6. CarParking - missing
+
+
+# ==================== 7. BikeParking ====================
+<#BikeParkingMapping>
+  a rr:TriplesMap ;
+
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT *,
+        (CASE "name"
+            WHEN 'Beide' THEN 'both'
+            WHEN 'Motorrad' THEN 'motorbike'
+            WHEN 'Velo' THEN 'bike'
+         END) as "vehicle_type"
+      FROM "bike_parking"
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "bikeparking/{poi_id}" ;
+      rr:class :BikeParking ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :spacesNo;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "anzahl_pp" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:positiveInteger
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :vehicleType;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "vehicle_type" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :location;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "fixed_geometry" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :parkingIn;
       rr:objectMap [
           a rr:ObjectMap, rr:TermMap ;
           rr:template "district/{district_id}" ;
