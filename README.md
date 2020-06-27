@@ -20,8 +20,8 @@ Project for the "Semantic Technologies and Linked Data" course.
 - Create the ontology (see resources/ontology/ontology.ttl)
 - Create the mapping (see resources/mapping/mapping.ttl)
 - Configurate the .properties file so that Ontop can connect to the H2 Database (see resources/database/db_connection.properties)
-- Configurate the Ontop installation location in the bash file (see generate_rdf_from_db.sh)
-- Execute the bash file (see generate_rdf_from_db.sh)
+- Configurate the Ontop installation location in the bash file (see generate_rdf.sh)
+- Execute the bash file (make sure the H2 server is active but any connection is closed)(see generate_rdf.sh)
 - Open the project in Intellij IDEA
 - Open the Maven view with _View > Tool Windows > Maven_.
 - In the Maven view, under _Plugins > dependency_, double-click the `dependency:unpack` goal. This will unpack the native libraries into $USER_HOME/.arcgis.
