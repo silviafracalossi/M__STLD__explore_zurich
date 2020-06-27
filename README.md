@@ -14,6 +14,7 @@ Project for the "Semantic Technologies and Linked Data" course.
 ### Data preparation - steps followed:
 - Create the folder "resources/data/02_elaborated/"
 - Execute the command _python python_elaboration\main.py_ from the main directory. The operation takes roughly 5 minutes. (see result in: resources/data/02_python_elaborated)
+- Split manually the 08a_elaborated_restaurant file (tool does not process more than 5000 lines)(see in resources/data/02_python_elaborated/, files 08a_elaborated_restaurant.json to 08h_elaborated_restaurant.json)
 - Transform the generated CSV files into SQL (tool: https://sqlizer.io/?utm_source=csv2sql_blog#/)
 - Transform the generated JSON files into SQL (tool: https://sqlizer.io/json-to-mysql/?utm_source=json2sql_blog#/)
 - Execute the SQL commands into an H2 database (see resources/database/h2_database.\*.db)
