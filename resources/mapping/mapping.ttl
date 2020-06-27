@@ -608,3 +608,99 @@
           rr:termType rr:IRI
       ]
   ] .
+
+# ==================== 12. Shop ====================
+<#ShopMapping>
+  a rr:TriplesMap ;
+
+  rr:logicalTable [
+    rr:sqlQuery """
+    SELECT "poi_id", "poi_geometry", "poi_name_en",
+    "poi_disambiguatingDescription_en", "poi_address_streetAddress",
+    "poi_openingHours_en", "poi_image_url", "poi_district_id"
+    FROM "shopping"
+    WHERE "poi_geometry" IS NOT NULL
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "shop/{poi_id}" ;
+      rr:class :Shop ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :name;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_name_en" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :description;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_disambiguatingDescription_en" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :address;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_address_streetAddress" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :image;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_image_url" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :openingHours;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_openingHours_en" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :location;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:column "poi_geometry" ;
+          rr:termType rr:Literal ;
+          rr:datatype xsd:string
+      ]
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :poiIn;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "district/{poi_district_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
