@@ -133,7 +133,7 @@ def elaborate_train_station_json(districts):
                 if district_id != 0:
                     row['geometry'] = str(location_point)
                     row['district_id'] = district_id
-                    new_file_lines.append([row])
+                    new_file_lines.append(row)
 
     # Destination file - name preparation
     destination_file = original_file.replace("-", "elaborated")
@@ -141,9 +141,7 @@ def elaborate_train_station_json(districts):
 
     # Writing rows in new file
     with open('resources/data/02_python_elaborated/'+destination_file, 'w') as json_dest_file:
-        for row in new_file_lines:
-            json.dump(row, json_dest_file)
-
+        json.dump({"stations": new_file_lines}, json_dest_file)
 
 
 def copy_neighbourhoods():
