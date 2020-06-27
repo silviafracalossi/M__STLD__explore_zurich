@@ -1,13 +1,23 @@
 
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
+import javafx.scene.control.Label;
 
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.PointCollection;
 import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.Polyline;
+import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
@@ -17,9 +27,16 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import org.eclipse.rdf4j.model.util.Literals;
 import org.eclipse.rdf4j.query.BindingSet;
+
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public class MainWindow extends Application {
@@ -28,17 +45,28 @@ public class MainWindow extends Application {
     private int hexBlue = 0xFF00FF00;
     private int hexGreen = 0xFF0000FF;
 
-    private GraphicsOverlay graphicsOverlay;
-    private MapView mapView;
+    private static final int SCALE = 5000;
 
+    private SpatialReference spatialReference;
+    private GraphicsOverlay graphicsOverlay;
+    private VBox controlsVBox;
+    private MapView mapView;
     private DataLoader dl;
+    //private ChoiceBox choiceBox;
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        dl = new DataLoader();
+
+//        Button button = new Button();
+//        button.
+
+        // Usual content
         StackPane stackPane = new StackPane();
         Scene scene = new Scene(stackPane);
 
-        stage.setTitle("DevLabs");
+        stage.setTitle("Explore Zurich");
         stage.setWidth(1000);
         stage.setHeight(600);
         stage.setScene(scene);
@@ -48,13 +76,17 @@ public class MainWindow extends Application {
         setupMap();
 
         setupGraphicsOverlay();
+        setupFilterPanel();
+        // addDistrictGraphic();
         // addPointGraphic();
         // addPolylineGraphic();
         // addPolygonGraphic();
 
-        addDistrictGraphic();
+        // add map view and control panel to stack pane
+        stackPane.getChildren().addAll(mapView, controlsVBox);
+        StackPane.setAlignment(controlsVBox, Pos.TOP_LEFT);
+        StackPane.setMargin(controlsVBox, new Insets(10, 0, 0, 10));
 
-        stackPane.getChildren().addAll(mapView);
     }
 
 
@@ -74,6 +106,109 @@ public class MainWindow extends Application {
             graphicsOverlay = new GraphicsOverlay();
             mapView.getGraphicsOverlays().add(graphicsOverlay);
         }
+    }
+
+    private void setupFilterPanel() {
+
+        // Creating the filter panel
+        controlsVBox = new VBox(6);
+        controlsVBox.setBackground(new Background(new BackgroundFill(Paint.valueOf("rgba(0,0,0,0.5)"),
+                CornerRadii.EMPTY, Insets.EMPTY)));
+        controlsVBox.setPadding(new Insets(10.0));
+        controlsVBox.setMaxSize(260, 120);
+        controlsVBox.getStyleClass().add("panel-region");
+
+        // Creating the title of the panel
+        Label title = new Label("Filter Section");
+        title.setFont(new Font("Arial", 20));
+        title.setAlignment(Pos.CENTER);
+        title.setStyle("-fx-text-fill: white;");
+
+        // Adding the header box
+        HBox hbox = new HBox(10);
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPadding(new Insets(10.0));
+        hbox.getChildren().addAll(title);
+
+        // Creating the District label
+        Label district_label = new Label("District");
+        district_label.setFont(new Font("Arial", 15));
+        district_label.setAlignment(Pos.CENTER_LEFT);
+        district_label.setStyle("-fx-text-fill: white;");
+
+        // Add the district choice box
+        ChoiceBox choiceBox = new ChoiceBox();
+        choiceBox.getItems().add("District 1");
+        choiceBox.getItems().add("District 2");
+        choiceBox.getItems().add("District 3");
+
+        // Adding the District box
+        HBox dbox = new HBox(10);
+        dbox.setAlignment(Pos.CENTER);
+        dbox.getChildren().addAll(district_label, choiceBox);
+
+
+        // Creating the filter button
+        Button filter_button = new Button("Apply Filter");
+        filter_button.setMaxWidth(Double.MAX_VALUE);
+        filter_button.setOnAction(e -> {
+
+            // Call to DataLoader class
+            dl.printAnything();
+
+            // Retrieve district selected
+            String value = (String) choiceBox.getValue();
+            System.out.println("District x chosen: " +value);
+
+        });
+
+
+
+
+        // Old buttons
+//        Button animateButton = new Button("LONDON (Animate)");
+//        Button centerButton = new Button("WATERLOO (Center and Scaled)");
+//        Button geometryButton = new Button("WESTMINSTER (Geometry)");
+//        animateButton.setMaxWidth(Double.MAX_VALUE);
+//        centerButton.setMaxWidth(Double.MAX_VALUE);
+//        geometryButton.setMaxWidth(Double.MAX_VALUE);
+//
+//        // Old listeners
+//        animateButton.setOnAction(e -> {
+//            // create the London location point
+//            Point londonPoint = new Point(-14093, 6711377, spatialReference);
+//            // create the viewpoint with the London point and scale
+//            Viewpoint viewpoint = new Viewpoint(londonPoint, SCALE);
+//
+//            // set the map views's viewpoint to London with a seven second duration
+//            mapView.setViewpointAsync(viewpoint, 7);
+//        });
+//
+//        centerButton.setOnAction(e -> {
+//            // create the Waterloo location point
+//            Point waterlooPoint = new Point(-12153, 6710527, spatialReference);
+//            // set the map views's viewpoint centered on Waterloo and scaled
+//            mapView.setViewpointCenterAsync(waterlooPoint, SCALE);
+//        });
+//
+//        geometryButton.setOnAction(e -> {
+//            // create a collection of points around Westminster
+//            PointCollection westminsterPoints = new PointCollection(spatialReference);
+//            westminsterPoints.add(new Point(-13823, 6710390));
+//            westminsterPoints.add(new Point(-13823, 6710150));
+//            westminsterPoints.add(new Point(-14680, 6710390));
+//            westminsterPoints.add(new Point(-14680, 6710150));
+//
+//            Polyline geometry = new Polyline(westminsterPoints);
+//
+//            // set the map views's viewpoint to Westminster
+//            mapView.setViewpointGeometryAsync(geometry);
+//        });
+
+        // add controls to the user interface panel
+        // controlsVBox.getChildren().addAll(animateButton, centerButton, geometryButton);
+
+        controlsVBox.getChildren().addAll(hbox, dbox, filter_button);
     }
 
 
@@ -148,10 +283,7 @@ public class MainWindow extends Application {
                 Graphic polygonGraphic = new Graphic(polygon, polygonSymbol);
                 graphicsOverlay.getGraphics().add(polygonGraphic);
             }
-
-
         }
-
     }
 
     @Override
@@ -160,6 +292,7 @@ public class MainWindow extends Application {
             mapView.dispose();
         }
     }
+
 
     public static void main(String[] args) {
         Application.launch(args);

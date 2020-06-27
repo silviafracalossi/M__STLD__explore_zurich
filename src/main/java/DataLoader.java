@@ -29,6 +29,10 @@ public class DataLoader {
         data_file = new File("D:/Uni/repositories/stld_explore_zurich/resources/data/04_RDF/data.rdf");
     }
 
+    public void printAnything() {
+        System.out.println("ciao");
+    }
+
 
     // Retrieving all the district areas
     public List<BindingSet> getDistrictAreas() throws Exception {
