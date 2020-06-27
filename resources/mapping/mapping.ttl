@@ -134,9 +134,34 @@
       ]
   ] .
 
-# ==================== 4. BusLine - TODO
+# ==================== 4. BusLine ====================
+<#BusLineMapping>
+  a rr:TriplesMap ;
 
-# ==================== 5. TrainStation
+  rr:logicalTable [
+    rr:sqlQuery """
+      SELECT * FROM "busline" WHERE "busline_name" IS NOT NULL
+  """] ;
+
+  rr:subjectMap [
+      a rr:SubjectMap, rr:TermMap;
+      rr:template "busline/{busline_name}" ;
+      rr:class :BusLine ;
+      rr:termType rr:IRI
+  ] ;
+
+  rr:predicateObjectMap [
+      a rr:PredicateObjectMap ;
+      rr:predicate :stopsAt;
+      rr:objectMap [
+          a rr:ObjectMap, rr:TermMap ;
+          rr:template "busstop/{bustop_id}" ;
+          rr:termType rr:IRI
+      ]
+  ] .
+
+
+# ==================== 5. TrainStation ====================
 <#TrainStationMapping>
   a rr:TriplesMap ;
 
