@@ -18,7 +18,6 @@
 :address rdf:type owl:AnnotationProperty .
 
 ### POI Subclasses Properties
-:website rdf:type owl:AnnotationProperty .
 :openingHours rdf:type owl:AnnotationProperty .
 :image rdf:type owl:AnnotationProperty .
 
