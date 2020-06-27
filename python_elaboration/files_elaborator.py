@@ -134,7 +134,10 @@ def elaborate_bus_csv(districts):
         spamwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         # Inserting header
-        spamwriter.writerow(header)
+        second_header = []
+        second_header.append("bustop_id")
+        second_header.append("busline_name")
+        spamwriter.writerow(second_header)
 
         # Inserting rows
         for line in new_file_lines:
