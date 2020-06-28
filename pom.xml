@@ -86,30 +86,6 @@
             <version>2.0.9</version>
         </dependency>
 
-        <!-- CARML - mapper -->
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-engine</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-
-        <!-- CARML - Choose the resolvers to suit your need -->
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-logical-source-resolver-jsonpath</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-logical-source-resolver-xpath</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.taxonic.carml</groupId>
-            <artifactId>carml-logical-source-resolver-csv</artifactId>
-            <version>0.2.3</version>
-        </dependency>
-
         <!--JavaFX dependencies -->
         <dependency>
             <groupId>org.openjfx</groupId>
