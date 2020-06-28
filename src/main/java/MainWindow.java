@@ -115,11 +115,10 @@ public class MainWindow extends Application {
         // Preparing the home - Normal Setting
         if (filters.compareTo("") == 0) {
             System.out.println("[INFO] Showing normal visualization");
-            // TODO uncomment this!
-//            List<BindingSet> districts_results = dl.getDistrictAreas();
-//            if (districts_results != null) {
-//                addDistricts(districts_results);
-//            }
+            List<BindingSet> districts_results = dl.getDistrictAreas();
+            if (districts_results != null) {
+                addDistricts(districts_results);
+            }
         } else {
 
             // Preparing the home - Display District
@@ -372,8 +371,6 @@ public class MainWindow extends Application {
             filter_button);                                                                         // filter button
     }
 
-
-
     // Showing markers on the map
     private void addMarkers() {
         for (BindingSet bs: markers_set) {
@@ -385,6 +382,11 @@ public class MainWindow extends Application {
     private void addSingleMarker(BindingSet marker) {
         if (graphicsOverlay != null) {
             SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, hexRed, 10.0f);
+
+            // Set different color for different marker
+            String iri = marker.getBinding("iri").getValue().toString();
+            String[] splitted_IRI = iri.split("/");
+            String instance_class = splitted_IRI[4];
             pointSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f));
             Point point = point_from_string(Literals.getLabel(marker.getValue("locat"), ""));
             graphicsOverlay.getGraphics().add(new Graphic (point, pointSymbol));
@@ -450,8 +452,8 @@ public class MainWindow extends Application {
     private void createPopUp(BindingSet marker, Callout callout, Point mapPoint) {
 
         // Retrieve class
-        String poi = marker.getBinding("poi").getValue().toString();
-        String[] splitted_IRI = poi.split("/");
+        String iri = marker.getBinding("iri").getValue().toString();
+        String[] splitted_IRI = iri.split("/");
         String instance_class = splitted_IRI[4];
         String uppercase_class = instance_class.substring(0, 1).toUpperCase() + instance_class.substring(1);
 
@@ -460,16 +462,16 @@ public class MainWindow extends Application {
             uppercase_class.compareTo("Bar") == 0 ||
             uppercase_class.compareTo("Attraction") == 0 ||
             uppercase_class.compareTo("Shop") == 0 ||
-            uppercase_class.compareTo("Museum") == 0){
+            uppercase_class.compareTo("Museum") == 0) {
 
             // Retrieving information
-            BindingSet full_marker = dl.getPoiByIRI(poi, uppercase_class);
+            BindingSet full_marker = dl.getPoiByIRI(iri, uppercase_class);
             if (full_marker != null) {
 
                 // Handling in case the hours are missing
                 String opening_hours = Literals.getLabel(full_marker.getValue("oh"), "");
                 if (opening_hours.compareTo("") != 0){
-                    opening_hours = opening_hours.replace("<p>", "").replace("<b>", "").replace("</b>", "").replace("&ndash;", "-");
+                    opening_hours = opening_hours.replace("<p>", "").replace("<b>", "").replace("</b>", "").replace("<br />", "").replace("&ndash;", "-");
                 } else {
                     opening_hours = "not provided.";
                 }
@@ -493,9 +495,86 @@ public class MainWindow extends Application {
             }
         }
 
+        if (uppercase_class.compareTo("Carparking")  == 0) {
+
+            // Retrieving information
+            BindingSet full_marker = dl.getCarParkingByIRI(iri);
+
+            if (full_marker != null) {
+                // Handling in case the hours are missing
+                String address = Literals.getLabel(full_marker.getValue("addr"), "");
+                if (address.compareTo("") == 0) {
+                    address = "not provided.";
+                }
+
+                // Creating text
+                String printed_text = "Name: " + Literals.getLabel(full_marker.getValue("nam"), "") + "\n";
+                printed_text += "Address: " + address + "\n";
+                printed_text += "Number of Spaces: " + Literals.getLabel(full_marker.getValue("sn"), "") + "\n";
+
+                // Configurating the popup
+                callout.setTitle("CarParking");
+                callout.setDetail(printed_text);
+                callout.showCalloutAt(mapPoint, DURATION);
+            }
+        }
+
+        if (uppercase_class.compareTo("Bikeparking") == 0) {
+            // Retrieving information
+            BindingSet full_marker = dl.getBikeParkingByIRI(iri);
+
+            if (full_marker != null) {
+
+                // Handling in case the hours are missing
+                String vehicleType = Literals.getLabel(full_marker.getValue("vt"), "");
+                if (vehicleType.compareTo("both") == 0) {
+                    vehicleType = "both bike and motorbike.";
+                }
+
+                // Creating text
+                String printed_text = "Vehicle Type: " + vehicleType + "\n";
+                printed_text += "Number of Spaces: " + Literals.getLabel(full_marker.getValue("sn"), "") + "\n";
+
+                // Configurating the popup
+                callout.setTitle("BikeParking");
+                callout.setDetail(printed_text);
+                callout.showCalloutAt(mapPoint, DURATION);
+            }
+        }
+
+        if (uppercase_class.compareTo("Busstop") == 0) {
+            // Retrieving information
+            BindingSet full_marker = dl.getBusStopByIRI(iri);
+
+            if (full_marker != null) {
+
+                // Creating text
+                String printed_text = "Name: " + Literals.getLabel(full_marker.getValue("nam"), "") + "\n";
+                printed_text += "Bus Stop Type: " + Literals.getLabel(full_marker.getValue("bst"), "") + "\n";
+
+                // Configurating the popup
+                callout.setTitle("BusStop");
+                callout.setDetail(printed_text);
+                callout.showCalloutAt(mapPoint, DURATION);
+            }
+        }
+
+        if (uppercase_class.compareTo("Trainstation") == 0) {
+            // Retrieving information
+            BindingSet full_marker = dl.getBusStopByIRI(iri);
+
+            if (full_marker != null) {
+
+                // Creating text
+                String printed_text = "Name: " + Literals.getLabel(full_marker.getValue("nam"), "") + "\n";
+
+                // Configurating the popup
+                callout.setTitle("TrainStation");
+                callout.setDetail(printed_text);
+                callout.showCalloutAt(mapPoint, DURATION);
+            }
+        }
     }
-
-
 
     @Override
     public void stop() {
