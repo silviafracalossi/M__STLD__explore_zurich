@@ -1,10 +1,14 @@
 
+import com.esri.arcgisruntime.geometry.*;
+import com.esri.arcgisruntime.mapping.view.Callout;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -12,18 +16,11 @@ import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.PointCollection;
-import com.esri.arcgisruntime.geometry.Polygon;
-import com.esri.arcgisruntime.geometry.Polyline;
-import com.esri.arcgisruntime.geometry.SpatialReference;
-import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.symbology.SimpleFillSymbol;
 import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import javafx.scene.layout.Background;
@@ -32,12 +29,10 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import javafx.util.Duration;
 import org.eclipse.rdf4j.model.util.Literals;
 import org.eclipse.rdf4j.query.BindingSet;
-import org.mapdb.Bind;
-
 import java.util.List;
-
 import static java.lang.Integer.parseInt;
 
 public class MainWindow extends Application {
@@ -52,6 +47,7 @@ public class MainWindow extends Application {
     // Variables to manage filters
     private String filters = "";
     private BindingSet selected_district;
+    private List<BindingSet> markers_set;
     private int district_id;
 
     // Graphical general component
@@ -67,6 +63,7 @@ public class MainWindow extends Application {
     // Others
     private SpatialReference spatialReference;
     private static final int SCALE = 5000;
+    private static final Duration DURATION = new Duration(500);
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -111,9 +108,10 @@ public class MainWindow extends Application {
 
         // Retrieving the markers and visualizing them on the map
         if(this.filters.compareTo("") != 0) {
-            List<BindingSet> marker_data = dl.getMarkerData(district_id, filters);
-            if (marker_data != null) {
-                addMarkers(marker_data);
+            markers_set = dl.getMarkerData(district_id, filters);
+
+            if (markers_set != null) {
+                addMarkers();
             }
         }
 
@@ -121,18 +119,74 @@ public class MainWindow extends Application {
         if (filters.compareTo("") == 0) {
             System.out.println("[INFO] Showing normal visualization");
 
-//            List<BindingSet> districts_results = dl.getDistrictAreas();
-//            if (districts_results != null) {
-//                addDistrictGraphic(districts_results);
-//            }
+            List<BindingSet> districts_results = dl.getDistrictAreas();
+            if (districts_results != null) {
+                addDistricts(districts_results);
+            }
         } else {
 
             // Preparing the home - Display District
             if (filters.contains("d")) {
                 System.out.println("[INFO] Visualizing district");
-                addSingleDistrictGraphic(selected_district);
+                addSingleDistrict(selected_district);
             }
         }
+
+        // Get the map view's callout
+        Callout callout = mapView.getCallout();
+        mapView.setOnMouseClicked(e -> {
+
+            // check that the primary mouse button was clicked and user is not panning
+            if (e.getButton() == MouseButton.PRIMARY && e.isStillSincePress()) {
+
+                // create a point from where the user clicked and create a map point from a point
+                Point2D point = new Point2D(e.getX(), e.getY());
+                Point mapPoint = mapView.screenToLocation(point);
+
+                // Converting into lat lon coordinates
+                String latLonDecimalDegrees = CoordinateFormatter.toLatitudeLongitude(mapPoint, CoordinateFormatter
+                        .LatitudeLongitudeFormat.DECIMAL_DEGREES, 4);
+
+                // Splitting location into lat and lon
+                String coordinates[] = latLonDecimalDegrees.split(" ");
+                Double lat = Double.parseDouble(coordinates[0].substring(0, coordinates[0].length() - 1));
+                Double lon = Double.parseDouble(coordinates[1].substring(0, coordinates[1].length() - 1));
+
+                // Check closest point
+                double error = 0.0005;
+                if (markers_set != null) {
+                    BindingSet correct_marker = null;
+
+                    // Look for the markers present in the map
+                    for (BindingSet marker: markers_set) {
+                        Point marker_location = point_from_string(Literals.getLabel(marker.getValue("locat"), ""));
+                        double marker_lat = marker_location.getY();
+                        double marker_lon = marker_location.getX();
+
+                        // Check if it is the correct marker
+                        if (lat+error > marker_lat && lat-error < marker_lat &&
+                            lon+error > marker_lon && lon-error < marker_lon) {
+                            correct_marker = marker;
+                            break;
+                        }
+                    }
+
+                    // If the point was found among the markers
+                    if (correct_marker != null) {
+                        callout.setTitle("Location");
+                        callout.setDetail("We have found the correct one!");
+                        callout.showCalloutAt(mapPoint, DURATION);
+                    } else {
+                        callout.setTitle("Location - no marker found");
+                        callout.setDetail(latLonDecimalDegrees.toString());
+                        callout.showCalloutAt(mapPoint, DURATION);
+                    }
+                }
+
+            } else if (e.getButton() == MouseButton.SECONDARY && e.isStillSincePress()) {
+                callout.dismiss();
+            }
+        });
 
         // Adding map and control panel to the stack pane
         stackPane.getChildren().addAll(mapView, controlsVBox);
@@ -328,6 +382,53 @@ public class MainWindow extends Application {
     }
 
 
+
+    // Showing markers on the map
+    private void addMarkers() {
+        for (BindingSet bs: markers_set) {
+            addSingleMarker(bs);
+        }
+    }
+
+    // Adding the specified marker to graphics
+    private void addSingleMarker(BindingSet marker) {
+        if (graphicsOverlay != null) {
+            SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, hexRed, 10.0f);
+            pointSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f));
+            Point point = point_from_string(Literals.getLabel(marker.getValue("locat"), ""));
+            graphicsOverlay.getGraphics().add(new Graphic (point, pointSymbol));
+        }
+    }
+
+//    private void addPolylineGraphic() {
+//        if (graphicsOverlay != null) {
+//            PointCollection polylinePoints = new PointCollection(SpatialReferences.getWgs84());
+//            polylinePoints.add(new Point(-118.29026, 34.1816));
+//            polylinePoints.add(new Point(-118.26451, 34.09664));
+//            Polyline polyline = new Polyline(polylinePoints);
+//            SimpleLineSymbol polylineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 3.0f);
+//            graphicsOverlay.getGraphics().add(new Graphic(polyline, polylineSymbol));
+//        }
+//    }
+
+
+    // Retrieving District polygons and showing them on the map
+    private void addDistricts(List<BindingSet> districts_data) {
+        for (BindingSet bs: districts_data) {
+            addSingleDistrict(bs);
+        }
+    }
+
+    // Adding the specified district to graphics
+    private void addSingleDistrict(BindingSet district) {
+        if (graphicsOverlay != null) {
+            Polygon polygon = polygon_from_string(Literals.getLabel(district.getValue("d_area"), ""));
+            SimpleLineSymbol polygonSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f);
+            graphicsOverlay.getGraphics().add(new Graphic(polygon, polygonSymbol));
+        }
+    }
+
+
     // Converting polygon retrieved in string format to actual polygon
     private Polygon polygon_from_string (String text) {
 
@@ -366,53 +467,6 @@ public class MainWindow extends Application {
                 SpatialReferences.getWgs84());
     }
 
-
-    // Showing markers on the map
-    private void addMarkers(List<BindingSet> marker_data) {
-        for (BindingSet bs: marker_data) {
-            addPointGraphic(bs);
-        }
-    }
-
-    // Adding the specified marker to graphics
-    private void addPointGraphic(BindingSet marker) {
-        if (graphicsOverlay != null) {
-            SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, hexRed, 10.0f);
-            pointSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f));
-            Point point = point_from_string(Literals.getLabel(marker.getValue("locat"), ""));
-            graphicsOverlay.getGraphics().add(new Graphic (point, pointSymbol));
-        }
-    }
-
-    private void addPolylineGraphic() {
-        if (graphicsOverlay != null) {
-            PointCollection polylinePoints = new PointCollection(SpatialReferences.getWgs84());
-            polylinePoints.add(new Point(-118.29026, 34.1816));
-            polylinePoints.add(new Point(-118.26451, 34.09664));
-            Polyline polyline = new Polyline(polylinePoints);
-            SimpleLineSymbol polylineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 3.0f);
-            Graphic polylineGraphic = new Graphic(polyline, polylineSymbol);
-            graphicsOverlay.getGraphics().add(polylineGraphic);
-        }
-    }
-
-
-    // Retrieving District polygons and showing them on the map
-    private void addDistrictGraphic(List<BindingSet> districts_data) {
-        for (BindingSet bs: districts_data) {
-            addSingleDistrictGraphic(bs);
-        }
-    }
-
-    // Adding the specified district to graphics
-    private void addSingleDistrictGraphic(BindingSet district) {
-        if (graphicsOverlay != null) {
-            Polygon polygon = polygon_from_string(Literals.getLabel(district.getValue("d_area"), ""));
-            SimpleLineSymbol polygonSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 2.0f);
-            Graphic polygonGraphic = new Graphic(polygon, polygonSymbol);
-            graphicsOverlay.getGraphics().add(polygonGraphic);
-        }
-    }
 
     @Override
     public void stop() {
