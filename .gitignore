@@ -7,9 +7,3 @@ python_elaboration/__pycache__
 log/*
 target/*
 *.iml
-
-#=== Example files (to be removed at the end)
-src/main/java/Arcgis/*
-src/main/java/Labs/*
-src/main/java/PDI/*
-src/main/java/JavaFX/*
