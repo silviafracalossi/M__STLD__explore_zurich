@@ -29,6 +29,20 @@ public class Main {
         }.start();
 
 
+
+        // Print result
+//        if (result_list != null) {
+//            for (BindingSet bs : result_list) {
+//                String poi = bs.getBinding("poi").getValue().toString();
+//                String nam = Literals.getLabel(bs.getValue("nam"), "");
+//                String descr = Literals.getLabel(bs.getValue("descr"), "");
+//                System.out.println(poi+": " +nam+ " and " +descr);
+//            }
+//        } else {
+//            System.out.println("no data :( ");
+//        }
+
+
         // STARTWINDOW INTERFACE
 //        EventQueue.invokeLater(new Runnable() {
 //            public void run() {

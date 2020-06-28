@@ -38,7 +38,6 @@ import static java.lang.Integer.parseInt;
 public class MainWindow extends Application {
 
     private int hexRed = 0xFFFF0000;
-    private int hexGreen = 0xFF00FF00;
     private int hexBlue = 0xFF0000FF;
 
     // Variable to retrieve data
@@ -61,8 +60,6 @@ public class MainWindow extends Application {
     private MapView mapView;
 
     // Others
-    private SpatialReference spatialReference;
-    private static final int SCALE = 5000;
     private static final Duration DURATION = new Duration(500);
 
     @Override
@@ -118,11 +115,11 @@ public class MainWindow extends Application {
         // Preparing the home - Normal Setting
         if (filters.compareTo("") == 0) {
             System.out.println("[INFO] Showing normal visualization");
-
-            List<BindingSet> districts_results = dl.getDistrictAreas();
-            if (districts_results != null) {
-                addDistricts(districts_results);
-            }
+            // TODO uncomment this!
+//            List<BindingSet> districts_results = dl.getDistrictAreas();
+//            if (districts_results != null) {
+//                addDistricts(districts_results);
+//            }
         } else {
 
             // Preparing the home - Display District
@@ -173,13 +170,7 @@ public class MainWindow extends Application {
 
                     // If the point was found among the markers
                     if (correct_marker != null) {
-                        callout.setTitle("Location");
-                        callout.setDetail("We have found the correct one!");
-                        callout.showCalloutAt(mapPoint, DURATION);
-                    } else {
-                        callout.setTitle("Location - no marker found");
-                        callout.setDetail(latLonDecimalDegrees.toString());
-                        callout.showCalloutAt(mapPoint, DURATION);
+                        createPopUp(correct_marker, callout, mapPoint);
                     }
                 }
 
@@ -400,18 +391,6 @@ public class MainWindow extends Application {
         }
     }
 
-//    private void addPolylineGraphic() {
-//        if (graphicsOverlay != null) {
-//            PointCollection polylinePoints = new PointCollection(SpatialReferences.getWgs84());
-//            polylinePoints.add(new Point(-118.29026, 34.1816));
-//            polylinePoints.add(new Point(-118.26451, 34.09664));
-//            Polyline polyline = new Polyline(polylinePoints);
-//            SimpleLineSymbol polylineSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, hexBlue, 3.0f);
-//            graphicsOverlay.getGraphics().add(new Graphic(polyline, polylineSymbol));
-//        }
-//    }
-
-
     // Retrieving District polygons and showing them on the map
     private void addDistricts(List<BindingSet> districts_data) {
         for (BindingSet bs: districts_data) {
@@ -466,6 +445,56 @@ public class MainWindow extends Application {
                 Double.parseDouble(coordinate_pairs[0]),
                 SpatialReferences.getWgs84());
     }
+
+    // Creating the popup after mouse click
+    private void createPopUp(BindingSet marker, Callout callout, Point mapPoint) {
+
+        // Retrieve class
+        String poi = marker.getBinding("poi").getValue().toString();
+        String[] splitted_IRI = poi.split("/");
+        String instance_class = splitted_IRI[4];
+        String uppercase_class = instance_class.substring(0, 1).toUpperCase() + instance_class.substring(1);
+
+        // Getting the information needed
+        if (uppercase_class.compareTo("Restaurant") == 0 ||
+            uppercase_class.compareTo("Bar") == 0 ||
+            uppercase_class.compareTo("Attraction") == 0 ||
+            uppercase_class.compareTo("Shop") == 0 ||
+            uppercase_class.compareTo("Museum") == 0){
+
+            // Retrieving information
+            BindingSet full_marker = dl.getPoiByIRI(poi, uppercase_class);
+            if (full_marker != null) {
+
+                // Handling in case the hours are missing
+                String opening_hours = Literals.getLabel(full_marker.getValue("oh"), "");
+                if (opening_hours.compareTo("") != 0){
+                    opening_hours = opening_hours.replace("<p>", "").replace("<b>", "").replace("</b>", "").replace("&ndash;", "-");
+                } else {
+                    opening_hours = "not provided.";
+                }
+
+                // Handling in case the hours are missing
+                String address = Literals.getLabel(full_marker.getValue("addr"), "");
+                if (address.compareTo("") == 0){
+                    address = "not provided.";
+                }
+
+                // Creating text
+                String printed_text = "Name: " + Literals.getLabel(full_marker.getValue("nam"), "") + "\n";
+                printed_text += "Description: " + Literals.getLabel(full_marker.getValue("descr"), "") + "\n";
+                printed_text += "Address: " + address + "\n";
+                printed_text += "Opening Hours: " + opening_hours + "\n";
+
+                // Configurating the popup
+                callout.setTitle(uppercase_class);
+                callout.setDetail(printed_text);
+                callout.showCalloutAt(mapPoint, DURATION);
+            }
+        }
+
+    }
+
 
 
     @Override

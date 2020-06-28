@@ -1,6 +1,4 @@
 
-import org.eclipse.rdf4j.model.util.Literals;
-import org.eclipse.rdf4j.query.Binding;
 import org.eclipse.rdf4j.query.BindingSet;
 import org.eclipse.rdf4j.query.QueryResults;
 import org.eclipse.rdf4j.query.TupleQueryResult;
@@ -19,7 +17,7 @@ public class DataLoader {
     private static Repository repo;
     private static File data_file;
     private List<BindingSet> districts_result_list = null;
-    RepositoryConnection connection;
+    private RepositoryConnection connection;
 
     public DataLoader() {
 
@@ -104,41 +102,6 @@ public class DataLoader {
     }
 
 
-    // Retrieving all the neighbourhoods along with the name of their districts
-    public List<BindingSet> getNeighbourhoodsAndDistrictNames() throws Exception {
-
-        // Creating result list variable
-        List<BindingSet> result_list = null;
-
-        // Making sure the connection is working
-        try (RepositoryConnection connection = repo.getConnection()) {
-            connection.add(data_file, "http://example.org/inst/", RDFFormat.RDFXML);
-
-            // Formulating SPARQL Query
-            String sparqlQuery = "" +
-                    "PREFIX : <http://example.org/term/>\n" +
-                    "SELECT ?n_name ?d_name \n" +
-                    "WHERE {\n" +
-                    "   ?n :neighbourhoodIn ?d .\n" +
-                    "   ?n rdf:type :Neighbourhood .\n" +
-                    "   ?d rdf:type :District .\n" +
-                    "   ?n :name ?n_name .\n" +
-                    "   ?d :name ?d_name .\n" +
-                    "}" +
-                    "\n";
-
-            // Evaluating the query and retrieving the results
-            System.out.println("\n[INFO] Query in getNeigbourhoodAndDistrictNames");
-            System.out.println(sparqlQuery);
-            try (TupleQueryResult query_result = connection.prepareTupleQuery(sparqlQuery).evaluate()) {
-                result_list = QueryResults.asList(query_result);
-            }
-
-            return result_list;
-        }
-    }
-
-
     // Return the POIs and Facilities requested by the user
     public List<BindingSet> getMarkerData(int district_id, String filters) {
 
@@ -161,8 +124,6 @@ public class DataLoader {
                 "WHERE { \n" +
                 "\t ?poi rdf:type :PointOfInterest . \n" +
                 "\t ?poi :poiIn "+district_reference+" . \n" +
-                "\t ?poi :name ?nam . \n" +
-                "\t ?poi :description ?descr . \n" +
                 "\t ?poi :location ?locat . \n";
 
         // Adding district specification
@@ -192,18 +153,37 @@ public class DataLoader {
             result_list = QueryResults.asList(query_result);
         }
 
-        // Print result
-//        if (result_list != null) {
-//            for (BindingSet bs : result_list) {
-//                String poi = bs.getBinding("poi").getValue().toString();
-//                String nam = Literals.getLabel(bs.getValue("nam"), "");
-//                String descr = Literals.getLabel(bs.getValue("descr"), "");
-//                System.out.println(poi+": " +nam+ " and " +descr);
-//            }
-//        } else {
-//            System.out.println("no data :( ");
-//        }
-
         return result_list;
+    }
+
+
+    // Retrieving the POI information of the given IRI
+    public BindingSet getPoiByIRI(String IRI, String instance_class) {
+
+        // Creating result list variable
+        List<BindingSet> result_list = null;
+        String reference = "<"+IRI+">";
+
+        // Formulating SPARQL Query
+        String sparqlQuery = "" +
+                "PREFIX : <http://example.org/term/>\n" +
+                "SELECT * \n" +
+                "WHERE {\n" +
+                "\t " +reference+ " rdf:type :"+instance_class+" .\n" +
+                "\t " +reference+ " :name ?nam . \n" +
+                "\t OPTIONAL {" +reference+ " :description ?descr } \n" +
+                "\t OPTIONAL {" +reference+ " :address ?addr } \n" +
+                "\t OPTIONAL {" +reference+ " :openingHours ?oh } \n" +
+                "}" +
+                "\n";
+
+        // Evaluating the query and retrieving the results
+        System.out.println("\n[INFO] Query in getPOIbyIRI");
+        System.out.println(sparqlQuery);
+        try (TupleQueryResult query_result = connection.prepareTupleQuery(sparqlQuery).evaluate()) {
+            result_list = QueryResults.asList(query_result);
+        }
+
+        return (result_list != null) ? result_list.get(0) : null;
     }
 }
