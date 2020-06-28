@@ -2,7 +2,14 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+
+
+
         // DATA LOADER
+//
+//        DataLoader dl = new DataLoader();
+//        dl.getMarkerData(10, "bra");
+//
 //        final DataLoader dl = new DataLoader();
 //        List<BindingSet> neighbourhood_list = dl.getNeighbourhoodsAndDistrictNames();
 //
@@ -12,6 +19,7 @@ public class Main {
 //            System.out.println(n_name+" in "+d_name);
 //        }
 
+
         // INTERFACE
         new Thread() {
             @Override
@@ -19,6 +27,7 @@ public class Main {
                 javafx.application.Application.launch(MainWindow.class);
             }
         }.start();
+
 
         // STARTWINDOW INTERFACE
 //        EventQueue.invokeLater(new Runnable() {
@@ -31,8 +40,6 @@ public class Main {
 //                }
 //            }
 //        });
-
-
 
     }
 }
