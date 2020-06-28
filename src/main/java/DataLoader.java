@@ -31,7 +31,7 @@ public class DataLoader {
         repo.initialize();
 
         // Defining the data file
-        data_file = new File("D:/Uni/repositories/stld_explore_zurich/resources/data/04_RDF/data.rdf");
+        data_file = new File("resources/data/04_RDF/data.rdf");
 
         // Connecting to file
         try {
