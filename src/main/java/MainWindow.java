@@ -471,7 +471,7 @@ public class MainWindow extends Application {
                 // Handling in case the hours are missing
                 String opening_hours = Literals.getLabel(full_marker.getValue("oh"), "");
                 if (opening_hours.compareTo("") != 0){
-                    opening_hours = opening_hours.replace("<p>", "").replace("<b>", "").replace("</b>", "").replace("<br />", "").replace("&ndash;", "-");
+                    opening_hours = opening_hours.replace("<p>", "").replace("</p>", "").replace("<b>", "").replace("</b>", "").replace("<br />", "").replace("&ndash;", "-");
                 } else {
                     opening_hours = "not provided.";
                 }
